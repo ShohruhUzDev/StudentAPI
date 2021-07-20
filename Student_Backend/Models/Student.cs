@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Student_Backend.Models
@@ -14,6 +15,7 @@ namespace Student_Backend.Models
         public string  Address { get; set; }
         public int  CoursNumber { get; set; }
         public int? TeacherId { get; set; }
+        [JsonIgnore]
         public virtual Teacher Teacher { get; set; }
     }
 }

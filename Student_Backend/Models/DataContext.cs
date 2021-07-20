@@ -14,6 +14,12 @@ namespace Student_Backend.Models
         {
 
         }
-
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Teacher>()
+                   .HasMany(u => u.Students)
+                   .WithOne(k => k.Teacher);
+                
+        }
     }
 }

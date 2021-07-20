@@ -9,7 +9,7 @@ using Student_Backend.Models;
 
 namespace Student_Backend.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class StudentsController : ControllerBase
     {
@@ -29,16 +29,23 @@ namespace Student_Backend.Controllers
 
         // GET: api/Students/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Student>> GetStudent(int id)
+       
+        public async Task<ActionResult<TeacherDto>> GetStudentByIdTeacher(int id)
         {
-            var student = await _context.Students.FindAsync(id);
-
-            if (student == null)
+            var teache = await _context.Students.Where(i => i.Id == id).Include(d=>d.Teacher).FirstOrDefaultAsync();
+            //  var teacjer = await _context.Students.FindAsync(id);
+            var teacherdto = new TeacherDto()
+            {
+                Id = teache.Teacher.Id,
+                LastName = teache.Teacher.LastName,
+                FirstName = teache.Teacher.FirstName
+            };
+            if (teache == null)
             {
                 return NotFound();
             }
 
-            return student;
+            return  teacherdto;
         }
 
         // PUT: api/Students/5
@@ -75,12 +82,18 @@ namespace Student_Backend.Controllers
         // POST: api/Students
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Student>> PostStudent(Student student)
+        public async Task<ActionResult<Student>> PostStudent(Student stu)
         {
-            _context.Students.Add(student);
+            
+            _context.Students.Add(stu);
             await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetStudent", new { id = student.Id }, student);
+            var yangi = new StudentLIst()
+            {
+                Id = stu.Id,
+                FirstName = stu.FirstName
+            };
+            return Ok(stu);
+            //return CreatedAtAction("GetStudent", new { id = stu.Id }, stu);
         }
 
         // DELETE: api/Students/5
